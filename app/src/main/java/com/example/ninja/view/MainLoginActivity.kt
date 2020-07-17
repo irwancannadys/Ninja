@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.ninja.R
 import com.example.ninja.model.ResponseBodyLogin
+import com.example.ninja.util.NetworkUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainLoginActivity : AppCompatActivity() {
@@ -27,7 +28,7 @@ class MainLoginActivity : AppCompatActivity() {
             val email = et_email.text.toString()
             val password = et_password.text.toString()
             val responseBodyLogin = ResponseBodyLogin(email = email, password = password)
-            viewModel.fetchLogin(responseBodyLogin)
+            checkLoginWithConnection(responseBodyLogin)
         }
     }
 
@@ -50,5 +51,13 @@ class MainLoginActivity : AppCompatActivity() {
         viewModel.errorMessage.observe(this, Observer { errorMessage ->
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
         })
+    }
+
+    private fun checkLoginWithConnection(responseBodyLogin: ResponseBodyLogin) {
+        if (!NetworkUtils.hasNetwork(this)){
+            Toast.makeText(this, "No Connection Internet", Toast.LENGTH_SHORT).show()
+        } else {
+            viewModel.fetchLogin(responseBodyLogin)
+        }
     }
 }
